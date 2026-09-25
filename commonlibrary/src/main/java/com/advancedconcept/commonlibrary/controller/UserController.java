@@ -3,6 +3,7 @@ package com.advancedconcept.commonlibrary.controller;
 import com.advancedconcept.commonlibrary.dto.record.UserRequest;
 import com.advancedconcept.commonlibrary.dto.record.UserResponse;
 import com.advancedconcept.commonlibrary.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewUser(@RequestBody UserRequest request) {
+    public ResponseEntity<String> createNewUser(@Valid @RequestBody UserRequest request) {
         userService.create(request);
         return new ResponseEntity<>("Create a new user successfully", HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateUser(
+            @Valid
             @PathVariable String id,
             @RequestBody UserRequest request
     ) {
@@ -38,7 +40,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+    public ResponseEntity<String> deleteUser(@Valid @PathVariable String id) {
         userService.delete(id);
         return new ResponseEntity<>("Delete a user successfully", HttpStatus.OK);
     }

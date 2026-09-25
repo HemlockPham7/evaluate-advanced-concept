@@ -6,6 +6,7 @@ public record UserResponse (
         String address,
         String phone,
         String email,
-        String username
+        String username,
+        String cccd
 ) {
 }

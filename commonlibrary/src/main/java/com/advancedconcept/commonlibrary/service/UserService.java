@@ -1,17 +1,17 @@
 package com.advancedconcept.commonlibrary.service;
 
-import com.advancedconcept.commonlibrary.dto.request.UserRq;
-import com.advancedconcept.commonlibrary.dto.response.UserRp;
+import com.advancedconcept.commonlibrary.dto.record.UserRequest;
+import com.advancedconcept.commonlibrary.dto.record.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
 
-    void create(UserRq request);
+    void create(UserRequest request);
 
-    void update(String id, UserRq request);
+    void update(String id, UserRequest request);
 
-    List<UserRp> getAll();
+    List<UserResponse> getAll();
 
     void delete(String id);
 }

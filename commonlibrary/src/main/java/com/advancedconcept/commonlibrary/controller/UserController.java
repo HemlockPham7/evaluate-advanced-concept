@@ -1,7 +1,7 @@
 package com.advancedconcept.commonlibrary.controller;
 
-import com.advancedconcept.commonlibrary.dto.request.UserRq;
-import com.advancedconcept.commonlibrary.dto.response.UserRp;
+import com.advancedconcept.commonlibrary.dto.record.UserRequest;
+import com.advancedconcept.commonlibrary.dto.record.UserResponse;
 import com.advancedconcept.commonlibrary.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,12 +18,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserRp>> listUsers() {
+    public ResponseEntity<List<UserResponse>> listUsers() {
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewUser(@RequestBody UserRq request) {
+    public ResponseEntity<String> createNewUser(@RequestBody UserRequest request) {
         userService.create(request);
         return new ResponseEntity<>("Create a new user successfully", HttpStatus.CREATED);
     }
@@ -31,7 +31,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updateUser(
             @PathVariable String id,
-            @RequestBody UserRq request
+            @RequestBody UserRequest request
     ) {
         userService.update(id, request);
         return new ResponseEntity<>("Update a user successfully", HttpStatus.OK);

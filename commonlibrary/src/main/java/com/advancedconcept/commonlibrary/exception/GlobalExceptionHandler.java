@@ -1,5 +1,6 @@
 package com.advancedconcept.commonlibrary.exception;
 
+import com.advancedconcept.commonlibrary.common.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,13 +14,19 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handlerValidationException(MethodArgumentNotValidException ex) {
+    public ApiResponse<Map<String, String>> handlerValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return ApiResponse.errorListDataMessage(400, "List of errors column", errors);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse<Object>> handlerRuntimeException(RuntimeException ex) {
+        ApiResponse<Object> apiResponse = ApiResponse.error(400, ex.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 }

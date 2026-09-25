@@ -1,5 +1,7 @@
 package com.advancedconcept.commonlibrary.controller;
 
+import com.advancedconcept.commonlibrary.common.ApiResponse;
+import com.advancedconcept.commonlibrary.common.BaseController;
 import com.advancedconcept.commonlibrary.dto.record.UserRequest;
 import com.advancedconcept.commonlibrary.dto.record.UserResponse;
 import com.advancedconcept.commonlibrary.service.UserService;
@@ -14,19 +16,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserController {
+public class UserController extends BaseController {
 
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> listUsers() {
-        return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
+    public ApiResponse<List<UserResponse>> listUsers() {
+        return getSuccessResponse(userService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewUser(@Valid @RequestBody UserRequest request) {
+    public ApiResponse<String> createNewUser(@Valid @RequestBody UserRequest request) {
         userService.create(request);
-        return new ResponseEntity<>("Create a new user successfully", HttpStatus.CREATED);
+        return createSuccessResponse("Create a new user successfully");
     }
 
     @PutMapping("/{id}")

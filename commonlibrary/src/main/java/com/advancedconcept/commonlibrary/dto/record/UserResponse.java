@@ -1,7 +1,7 @@
 package com.advancedconcept.commonlibrary.dto.record;
 
 public record UserResponse (
-        String id,
+        Long id,
         String name,
         String address,
         String phone,

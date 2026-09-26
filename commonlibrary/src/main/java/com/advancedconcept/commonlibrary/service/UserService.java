@@ -9,9 +9,9 @@ public interface UserService {
 
     void create(UserRequest request);
 
-    void update(String id, UserRequest request);
+    void update(Long id, UserRequest request);
 
     List<UserResponse> getAll();
 
-    void delete(String id);
+    void delete(Long id);
 }

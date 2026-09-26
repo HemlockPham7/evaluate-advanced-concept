@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(String id, UserRequest request) {
+    public void update(Long id, UserRequest request) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("User not found!");
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("User not found!");

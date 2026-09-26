@@ -1,5 +1,6 @@
 package com.advancedconcept.commonlibrary.service.impl;
 
+import com.advancedconcept.commonlibrary.annotation.MultiLevelCacheable;
 import com.advancedconcept.commonlibrary.dto.pagination.PaginationResponse;
 import com.advancedconcept.commonlibrary.dto.record.GenericPaginationResponse;
 import com.advancedconcept.commonlibrary.dto.record.ProductResponse;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
+    @MultiLevelCacheable(
+            name = "products",
+            key = "(#name != null ? #name : '_') + ':' + (#price != null ? #price : '_') + ':' + (#category != null ? #category : '_') + ':' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()",
+            l1Ttl = 60,
+            l2Ttl = 300,
+            timeUnit = TimeUnit.SECONDS
+    )
     public GenericPaginationResponse<ProductResponse> getAllProducts(String name, BigDecimal price, String category, Pageable pageable) {
         // Page<Product> products = productRepository.findAll(pageable);
         // return products.map(product -> productMapper.toResponse(product));

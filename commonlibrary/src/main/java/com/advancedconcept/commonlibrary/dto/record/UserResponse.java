@@ -1,5 +1,7 @@
 package com.advancedconcept.commonlibrary.dto.record;
 
+import java.io.Serializable;
+
 public record UserResponse (
         Long id,
         String name,
@@ -8,5 +10,5 @@ public record UserResponse (
         String email,
         String username,
         String cccd
-) {
+) implements Serializable {
 }

@@ -1,5 +1,6 @@
 package com.advancedconcept.commonlibrary.dto.record;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 public record ProductResponse(
@@ -7,5 +8,5 @@ public record ProductResponse(
         String name,
         BigDecimal price,
         String category
-) {
+) implements Serializable {
 }

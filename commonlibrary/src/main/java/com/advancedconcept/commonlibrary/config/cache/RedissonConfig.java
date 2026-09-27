@@ -32,6 +32,8 @@ public class RedissonConfig {
                 .setRetryAttempts(3)
                 .setConnectionPoolSize(32)
                 .setConnectionMinimumIdleSize(8);
+        config.setThreads(4);
+        config.setNettyThreads(8);
 
         return Redisson.create(config);
     }

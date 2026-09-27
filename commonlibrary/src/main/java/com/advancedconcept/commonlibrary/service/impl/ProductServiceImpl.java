@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +26,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @MultiLevelCacheable(
             name = "products",
-            key = "(#name != null ? #name : '_') + ':' + (#price != null ? #price : '_') + ':' + (#category != null ? #category : '_') + ':' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()",
-            l1Ttl = 60,
-            l2Ttl = 300,
-            timeUnit = TimeUnit.SECONDS
+            key = "(#name != null ? #name : '_') + ':' + (#price != null ? #price : '_') + ':' + (#category != null ? #category : '_') + ':' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()"
     )
     public GenericPaginationResponse<ProductResponse> getAllProducts(String name, BigDecimal price, String category, Pageable pageable) {
         // Page<Product> products = productRepository.findAll(pageable);

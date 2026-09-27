@@ -1,4 +1,15 @@
+server:
+  port: 9090
+  tomcat:
+    threads:
+      max: 400
+    max-connections: 8192
+    accept-count: 2000
+
 spring:
+  threads:
+    virtual:
+      enabled: true
   application:
     name: commonlibrary
 
@@ -10,7 +21,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         jdbc:
@@ -28,36 +39,11 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
-server:
-  port: 9090
-
-app:
-  cache:
-    enabled: true
-    # Default configuration for all cache regions not explicitly declared.
-    default-config:
-      l1-initial-capacity: 100
-      l1-maximum-size: 1000
-      ttl-seconds: 300 # 5 minutes
-      refresh-threshold-ratio: 0.8 # 80% TTL then refresh
-      allow-null-values: true
-
-    # Specific ThreadPool for Background Refresh Ahead
-    refresh-thread-pool:
-      core-pool-size: 5
-      max-pool-size: 20
-      queue-capacity: 500
-      thread-name-prefix: "cache-refresh-"
-
-    # Configuration for each of the region
-    configs:
-      products:
-        l1-initial-capacity: 200
-        l1-maximum-size: 5000
-        ttl-seconds: 600
-        refresh-threshold-ratio: 0.75
-      users:
-        l1-initial-capacity: 50
-        l1-maximum-size: 500
-        ttl-seconds: 120
-        refresh-threshold-ratio: 0.8
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: false

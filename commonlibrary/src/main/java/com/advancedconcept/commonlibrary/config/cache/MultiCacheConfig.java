@@ -17,7 +17,7 @@ public class MultiCacheConfig {
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .initialCapacity(100)
                 .maximumSize(5000)
-                .expireAfterWrite(240, TimeUnit.SECONDS)); // Default TTL cho L1
+                .expireAfterWrite(150, TimeUnit.SECONDS));
         return cacheManager;
     }
 }

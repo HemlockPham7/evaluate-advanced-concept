@@ -3,6 +3,7 @@ package com.advancedconcept.commonlibrary.controller;
 import com.advancedconcept.commonlibrary.common.ApiResponse;
 import com.advancedconcept.commonlibrary.common.BaseController;
 import com.advancedconcept.commonlibrary.dto.record.GenericPaginationResponse;
+import com.advancedconcept.commonlibrary.dto.record.ProductRequest;
 import com.advancedconcept.commonlibrary.dto.record.ProductResponse;
 import com.advancedconcept.commonlibrary.service.KafkaService;
 import com.advancedconcept.commonlibrary.service.ProductService;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -37,6 +40,27 @@ public class ProductController extends BaseController {
         Pageable pageable = PageRequest.of(page, size, sortBy);
 
         return getSuccessResponse(productService.getAllProducts(name, price, category, pageable));
+    }
+
+    @PostMapping
+    public ApiResponse<String> createNewProduct(@RequestBody ProductRequest request) {
+        productService.createProduct(request);
+        return createSuccessResponse("Create a new product successfully");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> udpateProductById(
+            @PathVariable Long id,
+            @RequestBody ProductRequest request
+    ) {
+        productService.updateProductById(id, request);
+        return new ResponseEntity<>("Update a product successfully", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProductById(@PathVariable Long id) {
+        productService.deleteProductById(id);
+        return new ResponseEntity<>("Delete a product successfully", HttpStatus.OK);
     }
 
     @PostMapping("/kafka-health")

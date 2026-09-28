@@ -4,15 +4,13 @@ import com.advancedconcept.commonlibrary.common.ApiResponse;
 import com.advancedconcept.commonlibrary.common.BaseController;
 import com.advancedconcept.commonlibrary.dto.record.GenericPaginationResponse;
 import com.advancedconcept.commonlibrary.dto.record.ProductResponse;
+import com.advancedconcept.commonlibrary.service.KafkaService;
 import com.advancedconcept.commonlibrary.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -22,6 +20,7 @@ import java.math.BigDecimal;
 public class ProductController extends BaseController {
 
     private final ProductService productService;
+    private final KafkaService kafkaService;
 
     @GetMapping
     public ApiResponse<GenericPaginationResponse<ProductResponse>> getAllProducts(
@@ -38,5 +37,10 @@ public class ProductController extends BaseController {
         Pageable pageable = PageRequest.of(page, size, sortBy);
 
         return getSuccessResponse(productService.getAllProducts(name, price, category, pageable));
+    }
+
+    @PostMapping("/kafka-health")
+    public void mqHealthCheck(@RequestBody String message) {
+        kafkaService.sendMessage("health-check", message);
     }
 }

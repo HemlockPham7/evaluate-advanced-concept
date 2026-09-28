@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS public.books (
 
 ALTER TABLE public.books REPLICA IDENTITY FULL;
 
-CREATE PUBLICATION books_publication FOR TABLE public.books;
+ALTER PUBLICATION cache_publication ADD TABLE public.books;

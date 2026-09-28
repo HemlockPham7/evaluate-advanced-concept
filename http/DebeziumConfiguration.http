@@ -2,7 +2,7 @@ POST http://localhost:8083/connectors
 Content-Type: application/json
 
 {
-  "name": "book-connector",
+  "name": "cache-connector",
   "config": {
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
     "tasks.max": "1",
@@ -13,10 +13,10 @@ Content-Type: application/json
     "database.dbname": "my_postgres_db",
     "plugin.name": "pgoutput",
     "slot.name": "debezium_book_slot",
-    "publication.name": "books_publication",
+    "publication.name": "cache_publication",
     "publication.autocreate.mode": "filtered",
     "schema.include.list": "public",
-    "table.include.list": "public.books",
+    "table.include.list": "public.books,public.products",
     "topic.prefix": "cdc",
     "poll.interval.ms": "100"
   }

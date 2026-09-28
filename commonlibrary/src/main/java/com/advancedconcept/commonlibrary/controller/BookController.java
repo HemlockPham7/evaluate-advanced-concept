@@ -1,9 +1,9 @@
-package com.advancedconcept.bookservice.controller;
+package com.advancedconcept.commonlibrary.controller;
 
-import com.advancedconcept.bookservice.dto.record.BookRequest;
-import com.advancedconcept.bookservice.dto.record.BookResponse;
-import com.advancedconcept.bookservice.service.BookService;
-import com.advancedconcept.bookservice.service.KafkaService;
+import com.advancedconcept.commonlibrary.dto.record.BookRequest;
+import com.advancedconcept.commonlibrary.dto.record.BookResponse;
+import com.advancedconcept.commonlibrary.service.BookService;
+import com.advancedconcept.commonlibrary.service.KafkaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

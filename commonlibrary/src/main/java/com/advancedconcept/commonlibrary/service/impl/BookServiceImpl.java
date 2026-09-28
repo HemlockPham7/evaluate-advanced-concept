@@ -1,10 +1,10 @@
-package com.advancedconcept.bookservice.service.impl;
+package com.advancedconcept.commonlibrary.service.impl;
 
-import com.advancedconcept.bookservice.dto.record.BookRequest;
-import com.advancedconcept.bookservice.dto.record.BookResponse;
-import com.advancedconcept.bookservice.entity.Book;
-import com.advancedconcept.bookservice.repository.BookRepository;
-import com.advancedconcept.bookservice.service.BookService;
+import com.advancedconcept.commonlibrary.dto.record.BookRequest;
+import com.advancedconcept.commonlibrary.dto.record.BookResponse;
+import com.advancedconcept.commonlibrary.entity.Book;
+import com.advancedconcept.commonlibrary.repository.BookRepository;
+import com.advancedconcept.commonlibrary.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void updateBookById(Long id, BookRequest request) {
         Book book = bookRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("Book not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Book not found!"));
 
         book.setName(request.name());
         book.setContent(request.content());

@@ -1,0 +1,8 @@
+POST http://localhost:9090/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "System Design",
+  "price": 10000.00,
+  "category": "SOFTWARE"
+}

@@ -1,7 +1,7 @@
-package com.advancedconcept.bookservice.service;
+package com.advancedconcept.commonlibrary.service;
 
-import com.advancedconcept.bookservice.dto.record.BookRequest;
-import com.advancedconcept.bookservice.dto.record.BookResponse;
+import com.advancedconcept.commonlibrary.dto.record.BookRequest;
+import com.advancedconcept.commonlibrary.dto.record.BookResponse;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.advancedconcept.bookservice.entity;
+package com.advancedconcept.commonlibrary.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

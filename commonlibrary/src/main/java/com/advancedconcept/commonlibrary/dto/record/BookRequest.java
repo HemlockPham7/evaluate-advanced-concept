@@ -1,4 +1,4 @@
-package com.advancedconcept.bookservice.dto.record;
+package com.advancedconcept.commonlibrary.dto.record;
 
 import java.math.BigDecimal;
 

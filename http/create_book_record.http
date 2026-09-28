@@ -1,0 +1,10 @@
+POST http://localhost:9091/api/v1/books
+Content-Type: application/json
+
+{
+  "name": "System Design",
+  "content": "Load Balancer, Eventual Consistency",
+  "price": 10000.00,
+  "category": "SOFTWARE",
+  "author": "Alex Xu"
+}

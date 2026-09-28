@@ -12,6 +12,10 @@ spring:
       enabled: true
   application:
     name: commonlibrary
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: default-group
 
   datasource:
     url: jdbc:postgresql://localhost:5432/my_postgres_db

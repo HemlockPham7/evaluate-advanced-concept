@@ -28,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @MultiLevelCacheable(
             name = "products",
+            group = "list",
             key = "(#name != null ? #name : '_') + ':' + (#price != null ? #price : '_') + ':' + (#category != null ? #category : '_') + ':' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()"
     )
     public GenericPaginationResponse<ProductResponse> getAllProducts(String name, BigDecimal price, String category, Pageable pageable) {
@@ -52,6 +53,18 @@ public class ProductServiceImpl implements ProductService {
                 products.map(productMapper::toResponse).getContent(),
                 pagination
         );
+    }
+
+    @Override
+    @MultiLevelCacheable(
+            name = "products",
+            group = "detail",
+            key = "#id"
+    )
+    public ProductResponse getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+        return productMapper.toResponse(product);
     }
 
     @Override

@@ -47,12 +47,15 @@ public class MultiLevelCacheAspect {
 
     @Around("@annotation(multiLevelCacheable)")
     public Object handleMultiLevelCache(ProceedingJoinPoint joinPoint, MultiLevelCacheable multiLevelCacheable) throws Throwable {
-        String cacheName = multiLevelCacheable.name();
+        String name = multiLevelCacheable.name();
+        String group = multiLevelCacheable.group();
+
+        String l1CacheName = name + ":" + group;
         String generatedKey = parseKey(multiLevelCacheable.key(), joinPoint);
-        String fullCacheKey = cacheName + ":" + generatedKey;
+        String fullCacheKey = l1CacheName + ":" + generatedKey;
 
         // 1. Check L1 Cache (Caffeine)
-        Cache l1Cache = caffeineCacheManager.getCache(cacheName);
+        Cache l1Cache = caffeineCacheManager.getCache(l1CacheName);
         if (l1Cache != null) {
             Cache.ValueWrapper l1ValueWrapper = l1Cache.get(generatedKey);
             if (l1ValueWrapper != null && l1ValueWrapper.get() instanceof CacheValueWrapper cachedData) {

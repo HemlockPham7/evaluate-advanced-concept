@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 public interface ProductService {
 
     GenericPaginationResponse<ProductResponse> getAllProducts(String name, BigDecimal price, String category, Pageable pageable);
+    ProductResponse getProductById(Long id);
 
     void createProduct(ProductRequest request);
     void updateProductById(Long id, ProductRequest request);

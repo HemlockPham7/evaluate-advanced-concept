@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 public @interface MultiLevelCacheable {
     String name();
 
+    String group() default "";
+
     String key() default "";
 
     long l1Ttl() default 150;

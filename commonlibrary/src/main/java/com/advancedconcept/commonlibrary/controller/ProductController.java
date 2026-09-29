@@ -42,6 +42,11 @@ public class ProductController extends BaseController {
         return getSuccessResponse(productService.getAllProducts(name, price, category, pageable));
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<ProductResponse> getProductById(@PathVariable Long id) {
+        return getSuccessResponse(productService.getProductById(id));
+    }
+
     @PostMapping
     public ApiResponse<String> createNewProduct(@RequestBody ProductRequest request) {
         productService.createProduct(request);
@@ -49,7 +54,7 @@ public class ProductController extends BaseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> udpateProductById(
+    public ResponseEntity<String> updateProductById(
             @PathVariable Long id,
             @RequestBody ProductRequest request
     ) {

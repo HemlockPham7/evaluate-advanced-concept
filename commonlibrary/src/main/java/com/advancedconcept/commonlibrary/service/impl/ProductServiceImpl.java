@@ -3,6 +3,7 @@ package com.advancedconcept.commonlibrary.service.impl;
 import com.advancedconcept.commonlibrary.annotation.MultiLevelCacheable;
 import com.advancedconcept.commonlibrary.dto.pagination.PaginationResponse;
 import com.advancedconcept.commonlibrary.dto.record.GenericPaginationResponse;
+import com.advancedconcept.commonlibrary.dto.record.ProductRequest;
 import com.advancedconcept.commonlibrary.dto.record.ProductResponse;
 import com.advancedconcept.commonlibrary.entity.Product;
 import com.advancedconcept.commonlibrary.mapper.ProductMapper;
@@ -10,6 +11,7 @@ import com.advancedconcept.commonlibrary.repository.ProductRepository;
 import com.advancedconcept.commonlibrary.repository.specifications.ProductSpecification;
 import com.advancedconcept.commonlibrary.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @MultiLevelCacheable(
             name = "products",
+            group = "list",
             key = "(#name != null ? #name : '_') + ':' + (#price != null ? #price : '_') + ':' + (#category != null ? #category : '_') + ':' + #pageable.pageNumber + ':' + #pageable.pageSize + ':' + #pageable.sort.toString()"
     )
     public GenericPaginationResponse<ProductResponse> getAllProducts(String name, BigDecimal price, String category, Pageable pageable) {
@@ -50,6 +53,46 @@ public class ProductServiceImpl implements ProductService {
                 products.map(productMapper::toResponse).getContent(),
                 pagination
         );
+    }
+
+    @Override
+    @MultiLevelCacheable(
+            name = "products",
+            group = "detail",
+            key = "#id"
+    )
+    public ProductResponse getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+        return productMapper.toResponse(product);
+    }
+
+    @Override
+    public void createProduct(ProductRequest request) {
+        Product product = Product.builder()
+                .status(request.status())
+                .price(request.price())
+                .name(request.name())
+                .category(request.category())
+                .build();
+        productRepository.save(product);
+    }
+
+    @Override
+    public void updateProductById(Long id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+
+        BeanUtils.copyProperties(request, product);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+
+        productRepository.delete(product);
     }
 
 

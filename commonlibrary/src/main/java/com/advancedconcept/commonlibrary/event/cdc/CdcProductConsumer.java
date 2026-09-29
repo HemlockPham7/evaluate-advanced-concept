@@ -8,8 +8,16 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CdcProductConsumer {
 
-    @KafkaListener(topics = "cdc.public.products", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(
+            topics = "cdc.public.products",
+            containerFactory = "kafkaListenerContainerFactory"
+    )
     public void listen(String message) {
+
+        if (message == null) {
+            log.info("Receive Tombstone info");
+            return;
+        }
         log.info("Received cdc message for products table: " + message);
     }
 }

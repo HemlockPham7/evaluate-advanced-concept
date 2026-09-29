@@ -4,5 +4,6 @@ Content-Type: application/json
 {
   "name": "System Design",
   "price": 10000.00,
-  "category": "SOFTWARE"
+  "category": "SOFTWARE",
+  "status": "ACTIVE"
 }

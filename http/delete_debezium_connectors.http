@@ -1,1 +1,1 @@
-DELETE http://localhost:8083/connectors/book-connector
+DELETE http://localhost:8083/connectors/cache-connector

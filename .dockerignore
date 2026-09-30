@@ -1,0 +1,16 @@
+.git
+.gitignore
+
+.idea
+.vscode
+*.iml
+
+**/target/
+
+postgres_data/
+
+benmark/
+http/
+
+*.log
+.DS_Store

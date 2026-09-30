@@ -43,8 +43,10 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
@@ -59,38 +61,117 @@ services:
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    ports:
-      - "8081:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
-    depends_on:
-      - kafka
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:latest
+#    ports:
+#      - "8081:8080"
+#    environment:
+#      KAFKA_CLUSTERS_0_NAME: local
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+#    depends_on:
+#      - kafka
+#
+#  debezium:
+#    image: quay.io/debezium/connect:3.0
+#    container_name: debezium
+#    ports:
+#      - "8083:8083"
+#    environment:
+#      BOOTSTRAP_SERVERS: kafka:29092
+#      GROUP_ID: 1
+#      CONFIG_STORAGE_TOPIC: debezium_config
+#      OFFSET_STORAGE_TOPIC: debezium_offset
+#      STATUS_STORAGE_TOPIC: debezium_status
+#      KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+#      VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+#      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      CONNECT_REST_ADVERTISED_HOST_NAME: debezium
+#      CONNECT_REST_PORT: 8083
+#    depends_on:
+#      - kafka
+#      - postgres_db
 
-  debezium:
-    image: quay.io/debezium/connect:3.0
-    container_name: debezium
+  # ============================================================
+  # 1. OpenTelemetry Collector
+  # ============================================================
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command:
+      - "--config=/etc/otelcol-contrib/otel-collector-config.yaml"
+    volumes:
+      - ./deployment/collector/otel-collector-config.yaml:/etc/otelcol-contrib/otel-collector-config.yaml
     ports:
-      - "8083:8083"
-    environment:
-      BOOTSTRAP_SERVERS: kafka:29092
-      GROUP_ID: 1
-      CONFIG_STORAGE_TOPIC: debezium_config
-      OFFSET_STORAGE_TOPIC: debezium_offset
-      STATUS_STORAGE_TOPIC: debezium_status
-      KEY_CONVERTER_SCHEMAS_ENABLE: "false"
-      VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_REST_ADVERTISED_HOST_NAME: debezium
-      CONNECT_REST_PORT: 8083
+      - "4317:4317"   # OTLP gRPC - application -> collector
+      - "4318:4318"   # OTLP HTTP
+      - "8889:8889"   # Prometheus scrape endpoint
     depends_on:
-      - kafka
-      - postgres_db
+      - tempo
+
+
+  # ============================================================
+  # 2. Prometheus
+  # ============================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+    volumes:
+      - ./deployment/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    ports:
+      - "9090:9090"
+
+
+  # ============================================================
+  # 3. Tempo
+  # ============================================================
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    command:
+      - "-config.file=/etc/tempo.yaml"
+    volumes:
+      - ./deployment/tempo/tempo.yaml:/etc/tempo.yaml
+    ports:
+      - "3200:3200"
+      # Collector gọi tempo:4317 bên trong Docker network.
+
+
+  # ============================================================
+  # 4. Grafana
+  # ============================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./deployment/grafana/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    depends_on:
+      - prometheus
+      - tempo
+
+  commonlibrary:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: commonlibrary
+    command:
+      - -javaagent:/opt/opentelemetry/opentelemetry-javaagent.jar
+      - -Dotel.javaagent.configuration-file=/opt/opentelemetry/opentelemetry-config.properties
+      - -jar
+      - /app/app.jar
+    depends_on:
+      - otel-collector
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_data:

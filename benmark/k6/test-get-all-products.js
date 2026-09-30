@@ -35,7 +35,7 @@ export const options = {
 
 export default function () {
     const url =
-        'http://localhost:9090/api/v1/products' +
+        'http://localhost:8080/api/v1/products' +
         '?page=0' +
         '&size=10' +
         '&sort=id' +

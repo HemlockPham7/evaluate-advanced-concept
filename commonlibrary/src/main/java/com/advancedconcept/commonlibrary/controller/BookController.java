@@ -3,7 +3,6 @@ package com.advancedconcept.commonlibrary.controller;
 import com.advancedconcept.commonlibrary.dto.record.BookRequest;
 import com.advancedconcept.commonlibrary.dto.record.BookResponse;
 import com.advancedconcept.commonlibrary.service.BookService;
-import com.advancedconcept.commonlibrary.service.KafkaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
-    private final KafkaService kafkaService;
 
     @PostMapping
     public ResponseEntity<Void> createBook(
@@ -47,10 +45,5 @@ public class BookController {
     ) {
         bookService.deleteBookById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/kafka-health")
-    public void mqHealthCheck(@RequestBody String message) {
-        kafkaService.sendMessage("health-check", message);
     }
 }

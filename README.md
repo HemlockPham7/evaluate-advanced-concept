@@ -8,22 +8,26 @@ implementation of batch processing to upload specific process including complete
 evaluate-advanced-concept/
 │
 ├── commonlibrary/
-│   ├── pom.xml
-│   └── src/
+│   ├── src/main/resouces/
+│   │   ├── application.yml
+│   │   └── logback-spring.xml
+│   └── pom.xml
 │
 ├── deployment/
+│   ├── elk/
+│   │   ├── pipeline/
+│   │   │   └── logstash.conf
+│   │   ├── elasticsearch.yaml
+│   │   ├── kibana.yaml
+│   │   └── logstash.yaml
 │   ├── collector/
 │   │   └── otel-collector-config.yaml
-│   │
 │   ├── prometheus/
 │   │   └── prometheus.yaml
-│   │
 │   ├── tempo/
 │   │   └── tempo.yaml
-│   │
 │   ├── grafana/
 │   │   └── grafana-datasources.yaml
-│   │
 │   └── opentelemetry/
 │       ├── opentelemetry-javaagent.jar
 │       └── opentelemetry-config.properties
@@ -31,7 +35,6 @@ evaluate-advanced-concept/
 ├── benmark/
 ├── http/
 ├── postgres_data/
-│
 ├── Dockerfile
 ├── .dockerignore
 └── docker-compose.yml

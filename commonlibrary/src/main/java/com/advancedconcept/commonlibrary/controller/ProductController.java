@@ -67,9 +67,4 @@ public class ProductController extends BaseController {
         productService.deleteProductById(id);
         return new ResponseEntity<>("Delete a product successfully", HttpStatus.OK);
     }
-
-    @PostMapping("/kafka-health")
-    public void mqHealthCheck(@RequestBody String message) {
-        kafkaService.sendMessage("health-check", message);
-    }
 }

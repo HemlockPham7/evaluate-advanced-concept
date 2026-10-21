@@ -14,13 +14,36 @@ workloads while maintaining strict data consistency between cache tiers and the 
 
 ## 2. Distributed Caching and Refresh Ahead Method
 
+| Configuration              | Default Value | Description                                                    |
+|----------------------------|---------------|----------------------------------------------------------------|
+| L1 TTL                     | 150 seconds   | Logical time-to-live for Caffeine entries                      |
+| L2 TTL                     | 1,800 seconds | Time-to-live for Redis entries                                 |
+| Refresh Ahead Threshold    | 80% of L1 TTL | Triggers asynchronous refresh when L1 data reaches this age    |
+| Executor Core Pool Size    | 4 threads     | Number of core background worker threads                       |
+| Executor Maximum Pool Size | 10 threads    | Maximum number of background worker threads                    |
+| Executor Queue Capacity    | 500 tasks     | Maximum number of queued refresh tasks                         |
+| Normal Cache Lock Wait     | 5 seconds     | Maximum time to wait when acquiring the cache-load lock        |
+| Lock Lease Time            | 10 seconds    | Lock expiration time for normal cache loading                  |
+| Refresh Lock Wait          | 0 seconds     | Does not wait if another thread already holds the refresh lock |
+| Refresh Lock Lease Time    | 10 seconds    | Lock expiration time for asynchronous refresh                  |
+
+Key Scenarios
+- L1 HIT: Return the result immediately. If at least 80% of the L1 TTL has elapsed, trigger an asynchronous refresh.
+- L2 HIT: Retrieve data from Redis, update the Caffeine cache, and then return the result.
+- L1 MISS + L2 MISS: Acquire a distributed lock and re-check Redis before querying the database; this helps prevent a "cache stampede."
+- Lock acquisition failure: Wait for 100 ms and attempt to read from Redis again; if it is still a MISS, return null.
+- Database returns null: Do not write any data to either L1 or L2.
+
 ![Distributed Caching and Refreshahead Method](asset/architecture/distributed-refreshahead.png)
 
 ## 3. Demo
 
 ## 3.1 K6 Test Benchmark
 
-Test benmark for 5000 requests / second in 30 continuous seconds.
+- Test benchmark for 5000 requests / second in 30 continuous seconds.
+- Only 1 server.
+- CORE i5
+- 8th Gen
 
 | http_req_duration | p(x)           |
 |-------------------|----------------|
@@ -33,6 +56,17 @@ Test benmark for 5000 requests / second in 30 continuous seconds.
 ## 3.2 Grafana
 
 ## 3.3 Logstash
+
+### 3.3.1 Overall Logstash Dashboard
+
+![overall-logstash](asset/dashboard/overall-logstash.png)
+
+### 3.3.2 Db Fetch
+
+- Spamming 1000 requests to 2 get list api.
+- And there are only 2 `[DB FETCH]` messages.
+
+![DB FETCH](asset/dashboard/db-fetch.png)
 
 ## 4. Monitoring & Observability Structure
 

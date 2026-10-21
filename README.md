@@ -55,6 +55,14 @@ Key Scenarios
 
 ## 3.2 Grafana
 
+### 3.2.1 Grafana Dashboard
+
+![Grafana Dashboard](asset/dashboard/benchmark.png)
+
+### 3.2.2 Demo
+
+[![Test Benchmark](asset/dashboard/multi-level-cache-thumbnail.png)](https://youtu.be/FaJ3cvN6Fmc)
+
 ## 3.3 Logstash
 
 ### 3.3.1 Overall Logstash Dashboard

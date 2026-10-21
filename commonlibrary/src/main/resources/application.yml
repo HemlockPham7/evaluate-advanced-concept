@@ -13,15 +13,18 @@ spring:
   application:
     name: commonlibrary
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:29092
+#    bootstrap-servers: localhost:9092
     consumer:
       group-id: default-group
   data:
     redis:
-      host: localhost
+      host: redis
+#      host: localhost
       port: 6379
   datasource:
-    url: jdbc:postgresql://localhost:5432/my_postgres_db
+    url: jdbc:postgresql://postgres_db:5432/my_postgres_db
+#    url: jdbc:postgresql://localhost:5432/my_postgres_db
     username: admin
     password: admin
 

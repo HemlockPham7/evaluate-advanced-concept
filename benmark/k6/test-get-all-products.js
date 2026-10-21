@@ -6,17 +6,17 @@ export const options = {
         constant_request_rate: {
             executor: 'constant-arrival-rate',
 
-            rate: 10000,
+            rate: 1000,
             timeUnit: '1s',
 
             // Run for 30 seconds
-            duration: '30s',
+            duration: '60s',
 
             // Start with 50 VUs
-            preAllocatedVUs: 250,
+            preAllocatedVUs: 100,
 
             // Allow k6 to scale VUs when requests take longer
-            maxVUs: 1000,
+            maxVUs: 200,
         },
     },
 
